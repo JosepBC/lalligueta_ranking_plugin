@@ -7,7 +7,7 @@ from Results import RaceClassRankMethod
 def register_handlers(args):
     args['register_fn'](
         RaceClassRankMethod(
-            "Minidrone - Last Heat Position and lap time",
+            "La Lligueta - Last Heat Position",
             rank_heat_pos_and_time,
             None,
             None
