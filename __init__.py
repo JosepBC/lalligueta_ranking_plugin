@@ -55,20 +55,25 @@ def rank_heat_pos_and_time(rhapi, race_class, _args):
     
     # Flatten the grouped leaderboard back to a single list
     leaderboard = [item for sublist in temp_leaderboard for item in sublist]
+    # Correctly assign positions so they make sense
+    pos = 1
+    for pilot in leaderboard:
+        pilot['position'] = pos
+        pos += 1
 
     meta = {
         'rank_fields': [{
             'name': 'heat',
             'label': "Heat"
-        }, {
-            'name': 'fastest_lap',
-            'label': "Fastest Lap"
+        },{
+            'name': 'heat_rank',
+            'label': "Heat Position"
+        },{
+            'name': 'total_time',
+            'label': "Total time"
         },{
             'name': 'laps',
             'label': "Laps"
-        },{
-            'name': 'heat_rank',
-            'label': "Position"
         }]
     }
 
@@ -102,6 +107,7 @@ def append_to_leaderboard(leaderboard, heat, heat_leaderboard):
             'position': rank_pos,
             'fastest_lap': line['fastest_lap'],
             'laps': line['laps'],
+            'total_time': line['total_time']
         })
 
 def group_by_heat(leaderboard):
