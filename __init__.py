@@ -142,20 +142,20 @@ def swap_on_grouped_board(grouped_leaderboard):
         current_heat = grouped_leaderboard[i]
         next_heat = grouped_leaderboard[i + 1]
 
-        # Get the last pilot of the current heat and the first pilot of the next heat
-        last_pilot_current_heat = current_heat[-1]
-        first_pilot_next_heat = next_heat[0]
-
-        # Compare lap counts
-        if last_pilot_current_heat['laps'] == first_pilot_next_heat['laps']:
-            # Compare fastest lap times
-            if last_pilot_current_heat['fastest_lap'] > first_pilot_next_heat['fastest_lap']:
-                # Swap pilots
-                current_heat[-1], next_heat[0] = next_heat[0], current_heat[-1]
-                logger.debug(f"Swapped pilots due to times: {next_heat[0]['callsign']} with {current_heat[-1]['callsign']}")
-        elif last_pilot_current_heat['laps'] < first_pilot_next_heat['laps']:
-            # Swap pilots
+        # If any both heats are of 3 pilots only echange last with first
+        if len(current_heat) == 3 and len(next_heat) == 3:
             current_heat[-1], next_heat[0] = next_heat[0], current_heat[-1]
-            logger.debug(f"Swapped pilots due to laps: {next_heat[0]['callsign']} with {current_heat[-1]['callsign']}")
+            logger.debug(f"Swapped last pilot of current heat {next_heat[0]['callsign']} with first pilot of next heat {current_heat[-1]['callsign']}")
+        else:
+            # If source or destination groups are of more than 3 pilots:
+            # Swap with the following logic:
+            # Last pilot of current heat is P2 of next heat
+            # Second to last pilot of current heat is P1 of next heat
+            # First pilot of next heat is second to last of current heat
+            # Second pilot of next heat is last of current heat
+            current_heat[-1], current_heat[-2], next_heat[0], next_heat[1] = next_heat[1], next_heat[0], current_heat[-2], current_heat[-1]
+            #TODO: Update this logger
+            logger.debug(f"Swapped seond last pilot of current heat {next_heat[1]['callsign']} with second pilot of next heat {current_heat[-2]['callsign']}")
+
 
     return grouped_leaderboard
