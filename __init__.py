@@ -1,7 +1,5 @@
 from venv import logger
-import RHUtils
 from eventmanager import Evt
-from RHRace import StartBehavior
 from Results import RaceClassRankMethod
 
 def register_handlers(args):
