@@ -48,8 +48,13 @@ def rank_heat_pos_and_time(rhapi, race_class, _args):
         # Append the heat leaderboard to the consolidated leaderboard
         append_to_leaderboard(leaderboard, heat, heat_leaderboard)
 
-    grouped_leaderboard = group_by_heat(leaderboard)  
-    temp_leaderboard = swap_on_grouped_board(grouped_leaderboard)
+    grouped_leaderboard = group_by_heat(leaderboard)
+
+    # Don't swap pilots for last raceclass
+    if rhapi.db.raceclasses[-1].id == race_class.id:
+        temp_leaderboard = grouped_leaderboard
+    else:
+        temp_leaderboard = swap_on_grouped_board(grouped_leaderboard)
     
     # Flatten the grouped leaderboard back to a single list
     leaderboard = [item for sublist in temp_leaderboard for item in sublist]
