@@ -1,6 +1,8 @@
-from venv import logger
+import logging
 from eventmanager import Evt
 from Results import RaceClassRankMethod
+
+logger = logging.getLogger(__name__)
 
 def register_handlers(args):
     args['register_fn'](
@@ -25,13 +27,11 @@ def rank_heat_pos_and_time(rhapi, race_class, _args):
         tuple: A ranked list of pilots and metadata for the leaderboard.
     """
 
-    logger.debug("Starting ranking process for heats")
+    logger.info("Starting ranking process for heats")
 
     heats = rhapi.db.heats_by_class(race_class.id)
     # Reverse the heats to start from the last heat aka the top pilots
     reversed_heats = list(reversed(heats))
-
-    logger.debug(race_class.name)
 
     # Initialize the leaderboard
     leaderboard = []
@@ -40,7 +40,7 @@ def rank_heat_pos_and_time(rhapi, race_class, _args):
     for heat in reversed_heats:
         heat_result = rhapi.db.heat_results(heat)
         if not heat_result: # No heat result available as are pending
-            logger.debug(f"No heat_result for heat: {heat.display_name}, skipping.")
+            logger.info(f"No heat_result for heat: {heat.display_name}, skipping.")
             continue
         leaderboard_type = heat_result['meta']['primary_leaderboard']
         heat_leaderboard = heat_result[leaderboard_type]
@@ -52,8 +52,10 @@ def rank_heat_pos_and_time(rhapi, race_class, _args):
 
     # Don't swap pilots for last raceclass
     if rhapi.db.raceclasses[-1].id == race_class.id:
+        logger.info("Not swapping pilots as it's last class")
         temp_leaderboard = grouped_leaderboard
     else:
+        logger.info("Swapping pilots")
         temp_leaderboard = swap_on_grouped_board(grouped_leaderboard)
     
     # Flatten the grouped leaderboard back to a single list
@@ -80,11 +82,11 @@ def rank_heat_pos_and_time(rhapi, race_class, _args):
         }]
     }
 
-    logger.debug("Ranking process completed")
+    logger.info("Ranking process completed")
     return leaderboard, meta
     
 def initialize(rhapi):
-    logger.debug("Initializing MINIDRONE plugin")
+    logger.info("Initializing MINIDRONE plugin")
     rhapi.events.on(Evt.CLASS_RANK_INITIALIZE, register_handlers)
 
 def append_to_leaderboard(leaderboard, heat, heat_leaderboard):
@@ -151,10 +153,12 @@ def swap_on_grouped_board(grouped_leaderboard):
         current_heat = grouped_leaderboard[i]
         next_heat = grouped_leaderboard[i + 1]
 
+        logger.info(f"Current heat size: {len(current_heat)}")
+        logger.info(f"Next heat size: {len(next_heat)}")
         # If any both heats are of 3 pilots only echange last with first
         if len(current_heat) == 3 and len(next_heat) == 3:
+            logger.info(f"Will swap last pilot of current heat {current_heat[-1]['callsign']} with first pilot of next heat {next_heat[0]['callsign']}")
             current_heat[-1], next_heat[0] = next_heat[0], current_heat[-1]
-            logger.debug(f"Swapped last pilot of current heat {next_heat[0]['callsign']} with first pilot of next heat {current_heat[-1]['callsign']}")
         else:
             # If source or destination groups are of more than 3 pilots:
             # Swap with the following logic:
@@ -162,9 +166,8 @@ def swap_on_grouped_board(grouped_leaderboard):
             # Second to last pilot of current heat is P1 of next heat
             # First pilot of next heat is second to last of current heat
             # Second pilot of next heat is last of current heat
+            logger.info(f"Will swap last pilot of current heat {current_heat[-1]['callsign']} with second pilot of next heat {next_heat[1]['callsign']}")
+            logger.info(f"Will swap second to last pilot of current heat {current_heat[-2]['callsign']} with first pilot of next heat {next_heat[0]['callsign']}")
             current_heat[-1], current_heat[-2], next_heat[0], next_heat[1] = next_heat[1], next_heat[0], current_heat[-2], current_heat[-1]
-            #TODO: Update this logger
-            logger.debug(f"Swapped seond last pilot of current heat {next_heat[1]['callsign']} with second pilot of next heat {current_heat[-2]['callsign']}")
-
 
     return grouped_leaderboard
