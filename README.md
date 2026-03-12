@@ -1,10 +1,10 @@
 # RotorHazard Minidrone Plugin
 
-This repository contains the Minidrone Plugin for RotorHazard, a race timing system for FPV drone racing. The plugin introduces a custom ranking method based on the last heat positions and lap times.
+This repository contains the ranking plugin for [La Lligueta](http://lalligueta.com/). The plugin introduces a custom ranking method based on the last heat positions.
 
 ## Installation
 
-To install the Minidrone Plugin in RotorHazard, follow these steps:
+To install the La Lligueta Plugin in RotorHazard, follow these steps:
 
 1. **Clone the Repository**:
    Ensure you have the RotorHazard repository cloned on your system. Navigate to the `plugins` directory within the RotorHazard source folder.
@@ -14,10 +14,10 @@ To install the Minidrone Plugin in RotorHazard, follow these steps:
    ```
 
 2. **Copy the Plugin**:
-   Copy the `minidrone_plugin` folder into the `plugins` directory.
+   Clone the repo into the `plugins` directory.
 
    ```bash
-   cp -r /path/to/minidrone_plugin /path/to/RotorHazard/src/server/plugins/
+   git clone https://github.com/JosepBC/lalligueta_ranking_plugin.git
    ```
 
 3. **Restart RotorHazard**:
@@ -32,12 +32,12 @@ To install the Minidrone Plugin in RotorHazard, follow these steps:
    Check the RotorHazard logs to ensure the plugin is initialized correctly. You should see a log entry similar to:
 
    ```
-   Initializing MINIDRONE plugin
+   Loaded plugin 'lalligueta_heatgenerator_balanced_ranking'
    ```
 
 ## Usage
 
-The Minidrone Plugin introduces a custom ranking method called **"Minidrone - Last Heat Position and lap time"**. This ranking method processes heats to generate a leaderboard based on the following logic:
+The Minidrone Plugin introduces a custom ranking method called **"Class Ranking—La Lligueta - Last Heat Position"**. This ranking method processes heats to generate a leaderboard based on the following logic:
 
 1. **Reverse Heat Order**:
    The heats are processed in reverse order, starting from the last heat (top pilots).
@@ -49,9 +49,10 @@ The Minidrone Plugin introduces a custom ranking method called **"Minidrone - La
    The leaderboard is grouped by heat to facilitate comparisons between pilots in adjacent heats.
 
 4. **Pilot Swapping**:
+   Pilot swapping happens on all race classes but last one. As race classification is based on result of last class.
    Pilots are swapped between heats based on the following conditions:
-   - If the last pilot of the current heat and the first pilot of the next heat have the same lap count, the pilot with the faster lap time is ranked higher.
-   - If the last pilot of the current heat has fewer laps than the first pilot of the next heat, they are swapped.
+   - If current and next heat are of 3 pilots exchange last pilot of current heat with first of next heat.
+   - Otherwise, swap last pilot of current heat with P2 of next heat and second to last pilot of current heat is P1 of next heat
 
 5. **Flatten Leaderboard**:
    The grouped leaderboard is flattened back into a single list for final ranking.
@@ -67,40 +68,11 @@ The Minidrone Plugin introduces a custom ranking method called **"Minidrone - La
 3. **View Results**:
    The leaderboard will display the rankings based on the logic described above.
 
-## Updated Logic Overview
-
-The plugin's ranking logic has been updated to include the following steps:
-
-1. **Reverse Heat Order**:
-   The heats are processed in reverse order, starting from the last heat (top pilots).
-
-2. **Generate Leaderboard**:
-   The plugin consolidates the results of all heats into a single leaderboard.
-
-3. **Group by Heat**:
-   The leaderboard is grouped by heat to facilitate comparisons between pilots in adjacent heats.
-
-4. **Pilot Swapping**:
-   Pilots are swapped between heats based on the following conditions:
-   - If the last pilot of the current heat and the first pilot of the next heat have the same lap count, the pilot with the faster lap time is ranked higher.
-   - If the last pilot of the current heat has fewer laps than the first pilot of the next heat, they are swapped.
-
-5. **Detailed Logging**:
-   The plugin logs detailed information about the current and next heat results, including the pilots being swapped and the updated heats after swapping.
-
-6. **Flatten Leaderboard**:
-   The grouped leaderboard is flattened back into a single list for final ranking.
-
-7. **Return Final Rankings**:
-   The final leaderboard and metadata are returned for display in the RotorHazard interface.
-
 ### Additional Logging Details
 
 The plugin now logs the following during the ranking process:
-- Current and next heat results
-- Leaderboard transformations
+- If it's going to swap or not pilots
 - Pilot swaps, including callsigns and reasons for swapping
-- Updated heats after swapping
 
 ## Logging
 
@@ -113,7 +85,7 @@ Logs can be found in the RotorHazard log files, typically located in the `logs/`
 
 ## Contributing
 
-Contributions to the Minidrone Plugin are welcome! Feel free to submit issues or pull requests to improve the functionality or add new features.
+Contributions to the La Lligueta Plugin are welcome! Feel free to submit issues or pull requests to improve the functionality or add new features.
 
 ## License
 
