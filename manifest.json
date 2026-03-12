@@ -1,13 +1,12 @@
 {
     "name": "La Lligueta championship class ranking",
-    "domain": "minidrone",
     "author": "Josep Bello",
     "author_uri": "https://lalligueta.com/",
     "description": "Class ranking for La Lligueta",
     "info_uri": "https://github.com/JosepBC/lalligueta-ranking-plugin",
     "license": "MIT",
     "license_uri": "https://github.com/RotorHazard/RotorHazard/blob/main/LICENSE",
-    "version": "0.1",
+    "version": "1.0",
     "required_rhapi_version": "1.0",
     "category": [
         "Race Management"
