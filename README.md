@@ -1,4 +1,4 @@
-# RotorHazard Minidrone Plugin
+# RotorHazard La Lligueta Ranking Plugin
 
 This repository contains the ranking plugin for [La Lligueta](http://lalligueta.com/). The plugin introduces a custom ranking method based on the last heat positions.
 
