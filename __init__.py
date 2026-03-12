@@ -87,7 +87,7 @@ def rank_heat_pos_and_time(rhapi, race_class, _args):
     return leaderboard, meta
     
 def initialize(rhapi):
-    logger.info("Initializing MINIDRONE plugin")
+    logger.info("Initializing La Lligueta ranking plugin")
     rhapi.events.on(Evt.CLASS_RANK_INITIALIZE, register_handlers)
 
 def append_to_leaderboard(leaderboard, heat, heat_leaderboard):
